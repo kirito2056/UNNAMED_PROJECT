@@ -1,0 +1,56 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: friend_ai_backend
+    env_file:
+      - .env
+    ports:
+      - "${API_PORT:-8000}:8000"
+    volumes:
+      - ./backend/app:/app/app  # Mount the app directory for hot-reloading. / 핫리로딩을 위해 앱 디렉토리 마운트
+    command: uvicorn app.main:app --host ${API_HOST:-0.0.0.0} --port ${API_PORT:-8000} --reload
+    restart: unless-stopped
+    networks:
+      - friend_ai_net
+
+  # Placeholder for PostgreSQL database (will be activated later)
+  # PostgreSQL 데이터베이스를 위한 플레이스홀더 (추후 활성화 예정)
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: friend_ai_postgres
+  #   env_file:
+  #     - .env
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   restart: unless-stopped
+  #   networks:
+  #     - friend_ai_net
+
+  # Placeholder for Milvus vector database (will be activated later)
+  # Milvus 벡터 데이터베이스를 위한 플레이스홀더 (추후 활성화 예정)
+  # milvus:
+  #   image: milvusdb/milvus:v2.3.0-standalone
+  #   container_name: friend_ai_milvus
+  #   ports:
+  #     - "19530:19530"  # Milvus port
+  #     - "9091:9091"    # Milvus metrics port
+  #   volumes:
+  #     - milvus_data:/var/lib/milvus
+  #   restart: unless-stopped
+  #   networks:
+  #     - friend_ai_net
+
+networks:
+  friend_ai_net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  milvus_data:
+
+# To run: docker-compose up --build
+# 실행 명령어: docker-compose up --build
