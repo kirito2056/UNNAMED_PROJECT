@@ -2,9 +2,14 @@ from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+# Import routers
+from app.api.endpoints import communication
+
 # Create FastAPI app instance
 # FastAPI 앱 인스턴스 생성
 app = FastAPI(
+    title="Friend-like AI Assistant",
+    description="A personalized AI assistant with real-time communication capabilities",
     version="0.1.0",
 )
 
@@ -16,6 +21,14 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],  # 모든 HTTP 메서드 허용
     allow_headers=["*"],  # 모든 헤더 허용
+)
+
+# Include routers
+# 라우터 포함
+app.include_router(
+    communication.router,
+    prefix="/api",
+    tags=["Real-time Communication"]
 )
 
 class HealthCheckResponse(BaseModel):
