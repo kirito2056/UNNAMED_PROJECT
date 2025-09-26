@@ -89,7 +89,7 @@ class ChatMessage(Base):
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     message_type = Column(String(20), nullable=False)  # 'user', 'assistant', 'system'
     content = Column(Text, nullable=False)
-    metadata = Column(JSON, default={})  # 추가 메타데이터 (액션 블록 등)
+    message_metadata = Column(JSON, default={})  # 추가 메타데이터 (액션 블록 등)
     vector_id = Column(String(255))       # Milvus 벡터 ID 참조
     created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
 

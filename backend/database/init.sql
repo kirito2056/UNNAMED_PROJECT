@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS chat_messages (
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     message_type VARCHAR(20) NOT NULL CHECK (message_type IN ('user', 'assistant', 'system')),
     content TEXT NOT NULL,
-    metadata JSONB DEFAULT '{}',
+    message_metadata JSONB DEFAULT '{}',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     vector_id VARCHAR(255) -- Milvus 벡터 ID 참조용
 );

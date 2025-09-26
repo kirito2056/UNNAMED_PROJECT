@@ -1,16 +1,29 @@
 from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from contextlib import asynccontextmanager
 
 # Import routers
-from app.api.endpoints import communication
+from app.api.endpoints import communication, auth
+from app.database.postgres.connection import init_db, close_db
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """애플리케이션 생명주기 관리"""
+    # 시작 시 데이터베이스 초기화
+    await init_db()
+    yield
+    # 종료 시 데이터베이스 연결 해제
+    await close_db()
 
 # Create FastAPI app instance
 # FastAPI 앱 인스턴스 생성
 app = FastAPI(
     title="Friend-like AI Assistant",
-    description="A personalized AI assistant with real-time communication capabilities",
+    description="A personalized AI assistant with real-time communication and user authentication",
     version="0.1.0",
+    lifespan=lifespan
 )
 
 # Add CORS middleware
@@ -25,6 +38,12 @@ app.add_middleware(
 
 # Include routers
 # 라우터 포함
+app.include_router(
+    auth.router,
+    prefix="/api/auth",
+    tags=["Authentication"]
+)
+
 app.include_router(
     communication.router,
     prefix="/api",
